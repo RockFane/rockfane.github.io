@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="pragma" content="no-cache">
+  <meta http-equiv="cache-control" content="no-cache">
+  <meta name="applicable-device" content="mobile">
+  <meta name="renderer" content="webkit">
+  <meta name="force-rendering" content="webkit">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=device-width,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no,viewport-fit=cover">
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta name="Copyright" content="">
+  <meta name="Description" content="">
+  <meta name="Keywords" content="">
+  <meta name="format-detection" content="telephone=no">
+  <meta name="format-detection" content="email=no" />
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-status-bar-style" content="black-translucent">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+  <title>强制横屏适配</title>
+
+  <style>
+    html, body, div, p, ul, li, dl, dt, dd, em, i, span, a, img, input, h1, h2, h3, h4, h5 { margin: 0; padding: 0; }
+    a, img, input { border: none; }
+    ul, li{ list-style: none; }
+    a { text-decoration:none; color: #333; &:hover { color:#000; } }
+    img[src=''], img:not([src]) { opacity: 0; }
+    img { display: block; max-width: 100%; }
+    html { user-select: none; touch-action: none; }
+    input, textarea { user-select: all; user-select: auto; }
+    body { font: 14px/1.2 '-apple-system', '\5FAE\8F6F\96C5\9ED1', 'Helvetica Neue', 'Helvetica', 'Arial', 'sans-serif'; -webkit-tap-highlight-color: rgba(0, 0, 0, 0); -webkit-touch-callout: none; -webkit-text-size-adjust: none; }
+
+    html,
+    body {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      box-sizing: border-box;
+    }
+
+    .fullscreen-wrap {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+    }
+
+    .fullscreen-wrap *, .fullscreen-wrap ::before, .fullscreen-wrap ::after {
+      box-sizing: border-box;
+    }
+
+    .test {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      position: relative;
+      height: 100%;
+      font-weight: bold;
+      font-size: 30px;
+      color: #f00;
+    }
+
+    .box-1,
+    .box-2 {
+      position: absolute;
+    }
+
+    .box-1 {
+      background-color: rgba(0, 0, 255, 0.2);
+    }
+
+    .box-2 {
+      background-color: rgba(0, 255, 0, 0.2);
+    }
+  </style>
+</head>
+
+<body>
+  <div class="fullscreen-wrap">
+    <div id="main-frame" view-mode="h" view-rotation="auto" view-scale="noBorder" view-width="1624" view-height="750" view-align="">
+      <div class="test">强制横屏内容显示</test>
+      <div class="box-1"></div>
+      <div class="box-2"></div>
+    </div>
+  </div>
+
+  <script src="//game.gtimg.cn/images/js/jquery/jquery-1.11.3.min.js"></script>
+  <script src="//game.gtimg.cn/images/js/domWidget/mmd.domWidget.min.js"></script>
+
+  <script>
+    (function () {
+      var orientationResizeTimer = null;
+      var designWidth = 1624;
+      var designHeight = 750;
+
+      function orientationResize() {
+        var html = document.documentElement;
+        var w = html.clientWidth;
+        var h = html.clientHeight;
+        if (h < w) { // 横屏
+          html.style.fontSize = (w / designWidth) * 100 + 'px';
+          // 在旋转框架内的东西需要保持全屏时的宽高设置
+          var radio = h / designHeight;
+          var width = w / radio + 2;
+          var height = h / radio;
+          $('.box-1').show();
+          $('.box-2').hide();
+          $('.box-1').css({
+            width,
+            height,
+          });
+        } else { // 竖屏
+          html.style.fontSize = (h / designWidth) * 100 + 'px';
+          // 在旋转框架内的东西需要保持全屏时的宽高设置
+          var radio = w / designHeight;
+          var width = h / radio + 2;
+          var height = w / radio;
+          $('.box-1').hide();
+          $('.box-2').show();
+          $('.box-2').css({
+            width,
+            height,
+          });
+        }
+      }
+
+      function orientationResizeInit () {
+        clearTimeout(orientationResizeTimer);
+        orientationResize();
+        orientationResizeTimer = setTimeout(function () {
+          orientationResize();
+        }, 300);
+      }
+      orientationResizeInit();
+      window.addEventListener('DOMContentLoaded', orientationResizeInit, false);
+      window.addEventListener('resize', orientationResizeInit, false);
+      window.addEventListener('load', orientationResizeInit, false);
+      window.addEventListener('orientationchange', orientationResizeInit, false);
+    })();
+  </script>
+</body>
+</html>
